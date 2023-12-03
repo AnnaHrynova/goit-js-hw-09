@@ -33,6 +33,8 @@ function startCounter() {
   const selectedDate = flatpickr("#datetime-picker").selectedDates[0];
   const currentDate = new Date();
 
+  selectedDate.setHours(23, 59, 59);
+
   if (selectedDate <= currentDate) {
     alert("Please choose a date in the future");
     return;
@@ -83,15 +85,21 @@ function updateTimer() {
 button.addEventListener("click", startCounter);
 
 const divTimer = document.querySelector(".timer");
-const divField = document.querySelectorAll(".field");
-const divValue = document.querySelectorAll(".value");
-const divLabel = document.querySelectorAll(".label");
+const divFields = document.querySelectorAll(".field");
 
 divTimer.style.display = 'flex';
+divTimer.style.gap = '16px';
 
-divField.style.display = 'block';
+divFields.forEach(divField => {
+  divField.style.display = 'flex';
+  divField.style.flexDirection = 'column';
+  divField.style.alignItems = 'center';
 
-divValue.style.fontSize = '36px';
+  const divValue = divField.querySelector(".value");
+  const divLabel = divField.querySelector(".label");
 
-divLabel.style.fontSize = '16px';
-divLabel.style.textTransform = 'uppercase';
+  divValue.style.fontSize = '36px';
+
+  divLabel.style.fontSize = '12px';
+  divLabel.style.textTransform = 'uppercase';
+});
