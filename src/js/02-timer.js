@@ -7,8 +7,12 @@ const hoursElement = document.querySelector("[data-hours]");
 const minutesElement = document.querySelector("[data-minutes]");
 const secondsElement = document.querySelector("[data-seconds]");
 
+button.addEventListener("click", startCounter);
+
 let countdownInterval;
 let targetDate;
+
+button.disabled = true;
 
 const options = {
   enableTime: true,
@@ -17,30 +21,25 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     const selectedDate = selectedDates[0];
-    if (selectedDate < new Date()) {
+    if (selectedDate < Date.now()) {
       alert("Please choose a date in the future");
-      button.disabled = true;
     } else {
       button.disabled = false;
     }
   },
 };
 
-flatpickr("#datetime-picker", options);
-
+const datePicker = flatpickr("#datetime-picker", options);
 
 function startCounter() {
-  const selectedDate = flatpickr("#datetime-picker").selectedDates[0];
-  const currentDate = new Date();
+  targetDate = datePicker.selectedDates[0];
+  const currentDate = Date.now();
 
-  selectedDate.setHours(23, 59, 59);
-
-  if (selectedDate <= currentDate) {
+  if (targetDate <= currentDate) {
     alert("Please choose a date in the future");
     return;
   }
 
-  targetDate = selectedDate;
   clearInterval(countdownInterval);
   countdownInterval = setInterval(updateTimer, 1000);
 }
@@ -69,7 +68,7 @@ function addLeadingZero(value) {
 }
 
 function updateTimer() {
-  const timeDifference = targetDate - new Date();
+  const timeDifference = targetDate - Date.now();
   const time = convertMs(timeDifference);
 
   daysElement.textContent = addLeadingZero(time.days);
@@ -77,29 +76,27 @@ function updateTimer() {
   minutesElement.textContent = addLeadingZero(time.minutes);
   secondsElement.textContent = addLeadingZero(time.seconds);
 
-  if (timeDifference <= 0) {
+  if (timeDifference <= 1000) {
     clearInterval(countdownInterval);
   }
 }
 
-button.addEventListener("click", startCounter);
+// const divTimer = document.querySelector(".timer");
+// const divFields = document.querySelectorAll(".field");
 
-const divTimer = document.querySelector(".timer");
-const divFields = document.querySelectorAll(".field");
+// divTimer.style.display = 'flex';
+// divTimer.style.gap = '16px';
 
-divTimer.style.display = 'flex';
-divTimer.style.gap = '16px';
+// divFields.forEach(divField => {
+//   divField.style.display = 'flex';
+//   divField.style.flexDirection = 'column';
+//   divField.style.alignItems = 'center';
 
-divFields.forEach(divField => {
-  divField.style.display = 'flex';
-  divField.style.flexDirection = 'column';
-  divField.style.alignItems = 'center';
+//   const divValue = divField.querySelector(".value");
+//   const divLabel = divField.querySelector(".label");
 
-  const divValue = divField.querySelector(".value");
-  const divLabel = divField.querySelector(".label");
+//   divValue.style.fontSize = '36px';
 
-  divValue.style.fontSize = '36px';
-
-  divLabel.style.fontSize = '12px';
-  divLabel.style.textTransform = 'uppercase';
-});
+//   divLabel.style.fontSize = '12px';
+//   divLabel.style.textTransform = 'uppercase';
+// });
